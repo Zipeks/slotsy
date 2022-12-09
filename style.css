@@ -25,14 +25,19 @@ main {
     gap: 5px;
     padding: 10px 15px 10px 15px;
 }
-main > img {
+main > div {
     box-sizing: border-box;
     width: 33%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25em;
     border: 2px solid red;
     border-radius: 20px;
 }
-#btnGraj {
+.btnGraj {
+    transition-duration: 1000ms;
     height: 60px;
     font-family: Bebas Neue; 
     font-weight: 0; 
@@ -47,15 +52,20 @@ main > img {
     transform: translateY(0); 
 }
     
-#btnGraj:hover{ 
+.btnGraj:hover{ 
     transition : 1000ms; 
     transform : translateY(-6px); 
+    background: rgb(131,58,180);
     background: linear-gradient(90deg, #0066CC 0%, #c500cc 100%); 
-    color: #ffffff; 
     border: none; 
     cursor: pointer;
 }
-
+.btnActive {
+    transition-duration: 1000ms !important;
+    background: rgb(131,58,180) !important; 
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%) !important;   
+    color: #ffffff; 
+}
 footer {
     display: flex;
     justify-content: center;
