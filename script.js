@@ -8,9 +8,9 @@ function sleep(ms) {
 class JednorekiBandyta {
 
     constructor() {
-        this.obrazki = ["🍍","🍇","🍋","🍎","🥥","🥕"];
+        this.obrazki = ["🍍","🍇","🍋","🍎","🥥","🥕","🌶️","🍉"];
         this.pola = [document.querySelector("#slotIn1"), document.querySelector("#slotIn2"), document.querySelector("#slotIn3")];
-        this.stawka = document.querySelector("#stawka").value;
+        this.stawka = document.querySelector("#stawka");
         this.pola[0].innerHTML = this.obrazki[this.los()];
         this.pola[1].innerHTML = this.obrazki[this.los()];
         this.pola[2].innerHTML = this.obrazki[this.los()];
@@ -22,8 +22,9 @@ class JednorekiBandyta {
         return Math.round(Math.random()*(this.obrazki.length-1));
     }
 
-    async spuszczenieDzwigni() {
-        for (let i = 0 ; i < 3; i++) {
+    async spuszczenieDzwigni(choosen = -1) {
+        if (choosen == -1) {
+            for (let i = 0 ; i < this.pola.length; i++) {
             await sleep(i*100)
             let a = this.los();
             
@@ -31,47 +32,90 @@ class JednorekiBandyta {
                 a = this.los();
             }
             this.pola[i].innerHTML = this.obrazki[a];
+            }
+        } else {
+            let a = this.los();
+            
+            while (this.pola[choosen].innerHTML == this.obrazki[a]) {
+                a = this.los();
+            }
+            this.pola[choosen].innerHTML = this.obrazki[a];
         }
+        
     }
 
     async graj() {
-        if (btnGraj.innerText == "GRAJ") {
-            this.punkty-=this.stawka;
-            this.pointsSpan.innerHTML = this.punkty;
-            btnGraj.classList.add("btnActive");
-            btnGraj.innerText = "STOP";
-            for (let i = 0 ; i < 3; i++) {
-                await sleep(400+(i*100));
-                this.pola[i].classList.add("slot-machine-reel");
-                this.pola[i].classList.remove("slot-machine-reel-end");
-            }
-            while (btnGraj.innerText != "GRAJ") {
-                this.spuszczenieDzwigni();
-                await sleep(400);
-            }
+        if (this.punkty-this.stawka.value > 0) {
+            if (btnGraj.innerText == "GRAJ") {
 
-        } else {
-            btnGraj.innerText = "GRAJ";
-            btnGraj.classList.remove("btnActive");
-            btnGraj.disabled = true;
-            await sleep(1200);
-            this.spuszczenieDzwigni();
-            for (let i = 0 ; i < 3; i++) {
-                await sleep(400+i*100);
-                console.log(i);
-                this.pola[i].classList.remove("slot-machine-reel");
-                this.pola[i].classList.add("slot-machine-reel-end");
-            }
-            btnGraj.disabled = false;
+                btnGraj.disabled = true;
 
-            if ((slot1.innerHTML === slot2.innerHTML) && (slot2.innerHTML === slot3.innerHTML)) {
-                punkty += 100;
-                this.pointsSpan.innerHTML = this.punkty;
+                this.punkty-=this.stawka.value;
+                this.bet = this.stawka.value;
 
-            }
-        }        
+                pointsSpan.innerHTML = this.punkty;
+
+                btnGraj.classList.add("btnActive");
+                btnGraj.innerText = "STOP";
+
+                for (let i = 0 ; i < this.pola.length; i++) {
+                    
+                    this.pola[i].classList.add("slot-machine-reel-start");
+                    await sleep(400+(i*100));
+                    this.pola[i].classList.add("slot-machine-reel");
+                    this.pola[i].classList.remove("slot-machine-reel-end");
+                }
+
+                btnGraj.disabled = false;
+
+                while (btnGraj.innerText != "GRAJ") {
+                    this.status = "start";
+                    this.spuszczenieDzwigni();
+                    await sleep(400);
+                    this.status = "end";
+                }
+
+            } else {
+
+                btnGraj.innerText = "GRAJ";
+                btnGraj.classList.remove("btnActive");
+                btnGraj.disabled = true;
+
+                while (true) {
+                    if (this.status !== "end")  {
+                        await sleep(10);
+                        continue;
+                    }
+                    for (let i = 0 ; i < this.pola.length; i++) {
+                        await sleep(400+i*100);
+                        this.pola[i].classList.remove("slot-machine-reel");
+                        this.pola[i].classList.remove("slot-machine-reel-start");
+
+                        this.spuszczenieDzwigni(i);
+                    
+                        this.pola[i].classList.add("slot-machine-reel-end");
+                    }
+
+                    btnGraj.disabled = false;
+
+                    if ((this.pola[0].innerHTML === this.pola[1].innerHTML) && (this.pola[1].innerHTML === this.pola[2].innerHTML)) {
+
+                        console.log("duza wygrana");
+                        this.punkty += this.bet*100;
+                        pointsSpan.innerHTML = this.punkty;
+
+                    } else if ((this.pola[0].innerHTML === this.pola[1].innerHTML) || (this.pola[1].innerHTML === this.pola[2].innerHTML) || (this.pola[0].innerHTML === this.pola[2].innerHTML)){
+                        console.log("mala wygrana");
+                        this.punkty += this.bet*10;
+                        pointsSpan.innerHTML = this.punkty;
+
+                    }
+                    break;
+                    
+                }           
+            }        
+        }
     }
-
 }
 
 let bandyta = new JednorekiBandyta();
