@@ -3,6 +3,8 @@ body {
     margin: 0px;
     height: 100vh;
     background-color: #16213E;
+    font-family: 'Rubik Vinyl', cursive;
+
 }
 
 header {
@@ -14,6 +16,7 @@ header {
 
 }
 header > h1 {
+    font-family: 'Rubik 80s Fade', cursive;
     margin: 0px;
     word-spacing: 10px;
     text-transform: uppercase;
@@ -57,7 +60,6 @@ main > div > span {
     position: relative;
     font-size: 15em;
     overflow: hidden;
-    position: relative;
 }
 input {
     color: #E94560;     
@@ -71,19 +73,21 @@ input:focus {
     outline: none;
 }
 footer {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 15px;
     justify-content: center;
     align-items: center;
     height: 30%;
+    padding-bottom: 100px;
 
 }
 
 .btnGraj {
     transition-duration: 1000ms;
     height: 60px;
-    font-family: Bebas Neue; 
+    font-family: 'Rubik 80s Fade', cursive;
     font-weight: 0; 
     font-size: 26px; 
     color: #fff; 
@@ -146,6 +150,5 @@ footer {
     top: 120%;
 }
 .slot-machine-reel {
-    animation: slot-machine 0.4s infinite;
-    
+    animation: slot-machine 0.4s infinite;  
 }

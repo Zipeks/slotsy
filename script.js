@@ -8,7 +8,7 @@ function sleep(ms) {
 class JednorekiBandyta {
 
     constructor() {
-        this.obrazki = ["🍍","🍇","🍋","🍎","🥥","🥕","🌶️","🍉"];
+        this.obrazki = ["🍍","🍇","🍋","🍎","🥥","🥕","🌶️","🍉","🌽"];
         this.pola = [document.querySelector("#slotIn1"), document.querySelector("#slotIn2"), document.querySelector("#slotIn3")];
         this.stawka = document.querySelector("#stawka");
         this.pola[0].innerHTML = this.obrazki[this.los()];
@@ -45,9 +45,9 @@ class JednorekiBandyta {
     }
 
     async graj() {
-        if (this.punkty-this.stawka.value > 0) {
-            if (btnGraj.innerText == "GRAJ") {
-
+    
+        if (btnGraj.innerText == "GRAJ") {
+            if (this.punkty-this.stawka.value >= 0) {
                 btnGraj.disabled = true;
 
                 this.punkty-=this.stawka.value;
@@ -74,47 +74,46 @@ class JednorekiBandyta {
                     await sleep(400);
                     this.status = "end";
                 }
+            }
+        } else {
 
-            } else {
+            btnGraj.innerText = "GRAJ";
+            btnGraj.classList.remove("btnActive");
+            btnGraj.disabled = true;
 
-                btnGraj.innerText = "GRAJ";
-                btnGraj.classList.remove("btnActive");
-                btnGraj.disabled = true;
+            while (true) {
+                if (this.status !== "end")  {
+                    await sleep(10);
+                    continue;
+                }
+                for (let i = 0 ; i < this.pola.length; i++) {
+                    await sleep(400+i*100);
+                    this.pola[i].classList.remove("slot-machine-reel");
+                    this.pola[i].classList.remove("slot-machine-reel-start");
 
-                while (true) {
-                    if (this.status !== "end")  {
-                        await sleep(10);
-                        continue;
-                    }
-                    for (let i = 0 ; i < this.pola.length; i++) {
-                        await sleep(400+i*100);
-                        this.pola[i].classList.remove("slot-machine-reel");
-                        this.pola[i].classList.remove("slot-machine-reel-start");
+                    this.spuszczenieDzwigni(i);
+                
+                    this.pola[i].classList.add("slot-machine-reel-end");
+                }
 
-                        this.spuszczenieDzwigni(i);
-                    
-                        this.pola[i].classList.add("slot-machine-reel-end");
-                    }
+                btnGraj.disabled = false;
 
-                    btnGraj.disabled = false;
+                if ((this.pola[0].innerHTML === this.pola[1].innerHTML) && (this.pola[1].innerHTML === this.pola[2].innerHTML)) {
 
-                    if ((this.pola[0].innerHTML === this.pola[1].innerHTML) && (this.pola[1].innerHTML === this.pola[2].innerHTML)) {
+                    console.log("duza wygrana");
+                    this.punkty += this.bet*50;
+                    pointsSpan.innerHTML = this.punkty;
 
-                        console.log("duza wygrana");
-                        this.punkty += this.bet*100;
-                        pointsSpan.innerHTML = this.punkty;
+                } else if ((this.pola[0].innerHTML === this.pola[1].innerHTML) || (this.pola[1].innerHTML === this.pola[2].innerHTML) || (this.pola[0].innerHTML === this.pola[2].innerHTML)){
+                    console.log("mala wygrana");
+                    this.punkty += this.bet*5;
+                    pointsSpan.innerHTML = this.punkty;
 
-                    } else if ((this.pola[0].innerHTML === this.pola[1].innerHTML) || (this.pola[1].innerHTML === this.pola[2].innerHTML) || (this.pola[0].innerHTML === this.pola[2].innerHTML)){
-                        console.log("mala wygrana");
-                        this.punkty += this.bet*10;
-                        pointsSpan.innerHTML = this.punkty;
-
-                    }
-                    break;
-                    
-                }           
-            }        
-        }
+                }
+                break;
+                
+            }           
+        }        
     }
 }
 
